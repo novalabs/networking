@@ -135,7 +135,7 @@ public:
             err      = netconn_write_partly(_netconn, buffer, len, NETCONN_NOCOPY, &bytes);
             len     -= bytes;
             *wbytes += bytes;
-        } while ((err == ERR_OK) && (len >= 0));
+        } while ((err == ERR_OK) && (len > 0));
 
         if (err != ERR_OK) {
             if (err == ERR_CONN) {
