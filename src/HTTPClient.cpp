@@ -174,7 +174,7 @@ HTTPClient::request(
 
         buffer.appendFormat("%s /%s", method, url.path);
 
-        if (strlen(url.query) > 0) {
+        if (url.query != 0) {
             buffer.appendFormat("?%s", url.query);
         }
 
