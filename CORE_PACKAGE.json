@@ -1,0 +1,5 @@
+{
+  "name": "networking",
+  "description": "Networking tools",
+  "provider": "core"
+}
