@@ -183,13 +183,13 @@ HTTPClient::request(
         err = conn.connect(url.host, url.port);
 
         if (err == ERR_OK) {
-            err = conn.write(buffer, buffer.length(), &l, 2000);
+            err = conn.write(buffer, buffer.length(), &l, 5000);
 
             if (err == ERR_OK) {
                 bool loop = true;
 
                 do {
-                    err = conn.read(buffer, buffer.size(), &l, 1000);
+                    err = conn.read(buffer, buffer.size(), &l, 5000);
                     http_parser_execute(&parser, &settings, buffer, l);
 
                     if (err < 0) {
