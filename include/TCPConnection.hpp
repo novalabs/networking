@@ -17,6 +17,10 @@ public:
     TCPConnection() : _netconn(nullptr), _netbuf(nullptr), _netbuf_offset(0), _connected(false)
     {}
 
+    ~TCPConnection() {
+    	disconnect();
+    }
+
     err_t
     connect(
         const char* hostname,
