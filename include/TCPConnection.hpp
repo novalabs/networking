@@ -66,6 +66,8 @@ public:
         err_t err;
         struct netbuf* inbuf;
         uint16_t       offset = 0;
+        size_t         to_read = len;
+
 
         if (timeout <= 0) {
             timeout = 100;
@@ -75,7 +77,7 @@ public:
 
         size_t bytes = 0;
 
-        while (bytes < len) {
+        while (to_read > 0) {
             if (_netbuf != NULL) {
                 inbuf  = _netbuf;
                 offset = _netbuf_offset;
@@ -96,19 +98,25 @@ public:
             } else {
                 int nblen = netbuf_len(inbuf) - offset;
 
-                if ((bytes + nblen) > len) {
-                    netbuf_copy_partial(inbuf, buffer + bytes, len - bytes, offset);
+                if (nblen > to_read) {
+                    uint16_t copied = netbuf_copy_partial(inbuf, buffer + bytes, to_read, offset);
                     _netbuf = inbuf;
-                    _netbuf_offset = offset + len - bytes;
-                    bytes = len;
+                    _netbuf_offset = offset + copied;
+                    bytes += copied;
+                    to_read -= copied;
                 } else {
-                    netbuf_copy_partial(inbuf, buffer + bytes, nblen, offset);
-                    bytes += nblen;
+                	uint16_t copied = netbuf_copy_partial(inbuf, buffer + bytes, nblen, offset);
+                	if(copied == nblen) {
+                        netbuf_delete(inbuf);
+                        _netbuf = NULL;
+                        _netbuf_offset = 0;
+                	} else {
+                        _netbuf = inbuf;
+                        _netbuf_offset = offset + copied;
+                	}
 
-                    netbuf_delete(inbuf);
-
-                    _netbuf = NULL;
-                    _netbuf_offset = 0;
+                	bytes += copied;
+                    to_read -= copied;
                 }
             }
         }
