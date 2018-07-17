@@ -45,6 +45,7 @@ public:
         err = netconn_connect(_netconn, &ip_addr, port);
 
         if (err != ERR_OK) {
+            _netconn = nullptr;
             netconn_delete(_netconn);
         }
 
