@@ -9,6 +9,8 @@
 #include <core/networking/HTTPClient.hpp>
 #include <core/fatfs_wrapper/fatfsWrapper.h>
 
+#include <Module.hpp>
+
 namespace core {
 namespace networking {
 bool
@@ -40,8 +42,25 @@ HTTPFileDownload(
     http_client.onBody([&](const char* data, std::size_t size) {
                 // Write data
                 if (success) {
+
                     std::size_t written = 0;
-                    FRESULT err = wf_write(&file, data, size, &written);
+                    FRESULT err = FR_OK;
+
+                    int s = size;
+
+                    while((err == FR_OK) && (s > 512)) {
+                        size_t tmp = 0;
+                        err = wf_write(&file, data, 512, &tmp);
+                        data += 512;
+                        s -= 512;
+                        written += tmp;
+                    }
+
+                    if((err == FR_OK) && (s > 0)) {
+                        size_t tmp = 0;
+                        err = wf_write(&file, data, s, &tmp);
+                        written += tmp;
+                    }
 
                     if ((err != FR_OK) || (written < size)) {
                         wf_close(&file);
