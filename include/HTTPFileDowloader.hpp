@@ -48,11 +48,11 @@ HTTPFileDownload(
 
                     int s = size;
 
-                    while((err == FR_OK) && (s > 512)) {
+                    while((err == FR_OK) && (s > 511)) {
                         size_t tmp = 0;
-                        err = wf_write(&file, data, 512, &tmp);
-                        data += 512;
-                        s -= 512;
+                        err = wf_write(&file, data, 511, &tmp);
+                        data += 511;
+                        s -= 511;
                         written += tmp;
                     }
 
