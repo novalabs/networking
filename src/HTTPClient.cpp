@@ -92,7 +92,7 @@ class StringDuplicate
 public:
     StringDuplicate(
         const char* s
-    ) : _size(strlen(s)), _s(new char[_size])
+    ) : _size(strlen(s) + 1), _s(new char[_size])
     {
         if (_s) {
             ::strcpy(_s.get(), s);
